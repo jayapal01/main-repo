@@ -1,0 +1,18 @@
+- name: shell vs command
+  hosts: local
+  connection: local
+  tasks:
+ # - name: redirect ls output to a file
+ #   ansible.builtin.command: "ls -ltr > /tmp/output.txt"
+     # throws error  command but when i give shell in place of command it works  and shell gets full environment.
+
+  - name: redirect ls output to a file
+    ansible.builtin.shell: "ls -ltr > /tmp/output.txt" 
+    register: command_result  
+# gives ouput becuase redirections and variables works for these shell.
+
+#register = used to capture the output/result of a task and store it in a variable,so you can use it in the next tasks.
+
+  - name: print the outcome
+    ansible.builtin.debug:
+      msg: "{{ command_result }}"

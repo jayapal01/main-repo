@@ -1,0 +1,40 @@
+- name: Run app setup tasks
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: app-setup.yaml
+
+- name: run nodejs setup tasks
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: nodejs.yaml
+
+- name: copy mongodb repo 
+  ansible.builtin.copy:
+    src: mongo.repo
+    dest: /etc/yum.repos.d/mongo.repo
+
+- name: install mongodb client in the catalogue server
+  ansible.builtin.dnf:
+    name: mongodb-mongosh
+    state: present
+
+- name: check products loaded or not
+  ansible.builtin.command: mongosh --host 98.93.29.3 --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+  register: catalogue_output
+
+- name: print catalogue output
+  ansible.builtin.debug:
+    msg: "{{ catalogue_output }}"
+
+- name: load products
+  ansible.builtin.shell: mongosh --host 98.93.29.3 < /app/db/master-data.js
+  when: catalogue_output.stdout | int < 0
+
+
+
+
+- name: Include common role for systemd setup
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: systemd.yaml
+

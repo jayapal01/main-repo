@@ -1,0 +1,6 @@
+- name: giving varible values in inventory files
+  hosts: web
+  tasks:
+  - name: print course details
+    ansible.builtin.debug:
+      msg: "print the course name is {{ course }} and its long is {{ duration }}"

@@ -1,0 +1,17 @@
+- name: play book control facts checking
+  hosts: local
+  connection: local
+  become: yes
+  tasks:
+  - name: install nginx if this redhat
+    ansible.builtin.dnf:
+      name: nginx
+      state: present
+    when: ansible_os_family=="RedHat"    
+
+
+  - name: install nginx if this debian
+    ansible.builtin.apt:
+      name: nginx
+      state: present
+    when: ansible_os_family=="Debian"    

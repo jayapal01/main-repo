@@ -1,0 +1,31 @@
+- name: run the app setup role
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: app-setup.yaml
+
+- name: run the maven setup role
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: maven-setup.yaml
+
+
+
+- name: import data
+  community.mysql.mysql_db:
+    state: import
+    name: all
+    target: "{{ item }}"
+    login_user: root
+    login_password: RoboShop@1
+    login_host: 34.207.82.193  
+  loop:
+  - /app/db/schema.sql
+  - /app/db/app-user.sql 
+  - /app/db/master-data.sql
+
+
+
+- name: run the systemd setup role
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: systemd.yaml

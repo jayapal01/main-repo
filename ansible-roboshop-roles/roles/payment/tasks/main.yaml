@@ -1,0 +1,16 @@
+- name: run the app-setup setup 
+  ansible.builtin.include_role: 
+    name: common
+    tasks_from: app-setup.yaml
+
+- name: run the python setup 
+  ansible.builtin.include_role: 
+    name: common
+    tasks_from: python-setup.yaml
+
+
+
+- name: run the systemd setup 
+  ansible.builtin.include_role: 
+    name: common
+    tasks_from: systemd.yaml

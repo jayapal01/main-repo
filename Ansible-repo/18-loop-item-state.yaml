@@ -1,0 +1,12 @@
+- name: checks whether loops are working fine or not
+  hosts: local
+  connection: local
+  tasks:
+  - name: install packages
+    ansible.builtin.package:
+      name: "{{ item.name }}"
+      state: "{{ item.state }}"
+    loop:
+    - { name: 'mysql', state: 'absent'}
+    - { name: 'nginx', state: 'absent'}
+    - { name: 'zip', state: 'absent'} 

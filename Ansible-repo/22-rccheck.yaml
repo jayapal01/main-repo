@@ -1,0 +1,30 @@
+- name: install nginx
+  hosts: local
+  become: yes
+  connection: local
+  tags:
+  - check
+  tasks:
+  - name: install nginx server
+    ansible.builtin.package:
+      name: nginx
+      state: present
+    register: output
+   
+  - name: check the output
+    ansible.builtin.debug: 
+      msg: "nginxis already installed"
+    when: not output.changed
+
+  - name: check the output
+    ansible.builtin.debug: 
+      msg: "nginxis installing now"
+    when: output.changed
+
+
+
+  - name: start nginx server
+    ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: yes

@@ -1,0 +1,47 @@
+- name: functions
+  hosts: local
+  connection: local
+  vars:
+    Person: Jayapal Reddy
+    persons: "Ramesh,Suresh,Raheem,Joseph"
+  tasks:
+  - name: checking person
+    ansible.builtin.debug:
+      msg: "Hello {{ Person | default ('Ramesh') }}"
+
+  - name: checking person
+    ansible.builtin.debug:
+      msg: "Hello {{ Person | upper }}" # upper case
+
+  - name: checking person
+    ansible.builtin.debug:
+      msg: "Hello {{ Person | lower }}"  # lower case
+
+  - name: Check if 192.168.1.250 is a valid IPv4 address
+    ansible.builtin.set_fact:
+      data: "{{ '192.168.1.250' is ansible.utils.ipv4 }}"
+
+  - name: print names
+    ansible.builtin.debug:
+      msg: "Hello {{ persons | split(',') }}"
+
+  - name: convert map into list
+    vars:
+      course:
+        name: ansible
+        duration: 10HR
+        trainer: sivakumar
+    ansible.builtin.debug:
+      msg: "Course Info: {{ course | dict2items  }}"
+
+  - name: convert list into map
+    vars:
+      course:
+      - {'key': 'name', 'value': 'ansible'}
+      - {'key': 'duration', 'value': '10HR'}
+      - {'key': 'trainer', 'value': 'sivakumar'}
+    ansible.builtin.debug:
+      msg: "Course Info: {{ course | items2dict  }}"
+
+
+  

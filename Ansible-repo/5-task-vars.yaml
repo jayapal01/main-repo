@@ -1,0 +1,10 @@
+- name: checking the variables inside task
+  hosts: local
+  connection: local
+  tasks:
+  - name: print course information
+    vars:
+      course: Ansible
+      duration: 10 hours
+    ansible.builtin.debug:
+      msg: "Hello {{ course }} and this is {{ duration }} long"

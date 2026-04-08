@@ -1,0 +1,90 @@
+- name: configure shipping service
+  become: yes
+  hosts: shipping
+  # connection: local
+  tasks: 
+  - name: install maven and mysql
+    ansible.builtin.dnf:
+      name: "{{ item }}"
+      state: present
+    loop:
+    - mysql
+    - maven
+
+  - name: install pymysql and cryptography
+    ansible.builtin.pip:
+      name: "{{ item }}"
+      state: present
+    loop:
+    - PyMYSQL
+    - cryptography
+
+  - name: create roboshop system user
+    ansible.builtin.user:
+      name: roboshop
+      home: /app
+      system: true
+      shell: /sbin/nologin
+
+  - name: create an directory
+    ansible.builtin.file:
+      path: /app
+      state: directory
+
+  - name: download the application code
+    ansible.builtin.get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
+      dest: /tmp/shipping.zip
+
+  - name: unzip the downloaded code
+    ansible.builtin.unarchive:
+      src: /tmp/shipping.zip
+      dest: /app
+      remote_src: yes
+
+  - name: install maven dependencies
+    ansible.builtin.command: mvn clean package
+    args:
+        chdir: /app
+    
+  - name: rename jar file
+    ansible.builtin.command: mv target/shipping-1.0.jar shipping.jar
+    args:
+      chdir: /app
+
+  - name: copy shippig service file
+    ansible.builtin.copy:
+      src: shipping.service
+      dest: /etc/systemd/system/shipping.service
+
+  - name: daemon-reload service
+    ansible.builtin.systemd:
+      daemon_reload: true
+
+  - name: start and enable service
+    ansible.builtin.service:
+      name: shipping
+      state: started
+      enabled: yes
+
+  
+  - name: import data
+    community.mysql.mysql_db:
+      state: import
+      name: all
+      login_user: root
+      login_password: RoboShop@1
+      login_host: 54.82.43.39
+      target: "{{ item }}"
+    loop:
+    - /app/db/schema.sql
+    - /app/db/app-user.sql 
+    - /app/db/master-data.sql
+
+  - name: restart shipping
+    ansible.builtin.service:
+      name: shipping
+      state: restarted
+  
+
+    

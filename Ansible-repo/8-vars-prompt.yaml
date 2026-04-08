@@ -1,0 +1,16 @@
+- name: giving varible values from prompt like read in shell
+  hosts: local
+  connection: local
+  vars_prompt:
+  - name: username
+    prompt: enter username
+    private: false           # hide details while entering into prompt.
+
+  - name: password
+    prompt: enter the password
+    private: false
+
+  tasks:
+  - name: please enter the details from prompt
+    ansible.builtin.debug:
+      msg: "Hi my username is {{ username }} and password is {{ password }}"

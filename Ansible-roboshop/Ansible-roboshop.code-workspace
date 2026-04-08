@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../Ansible-repo"
+		},
+		{
+			"path": "../ansible-roboshop-roles"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

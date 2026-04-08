@@ -1,0 +1,16 @@
+- name: run appsetup setup
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: app-setup.yaml
+
+- name: run nodejs setup
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: nodejs.yaml
+
+
+
+- name: run systemd setup
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: systemd.yaml
